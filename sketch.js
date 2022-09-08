@@ -1,12 +1,15 @@
-let brain;
-
 function setup() {
     createCanvas(400, 400);
-    brain = new NeuralNetwork(3, 3, 1);
-    matrix = new Matrix(3, 3);
-    matrix.randomize();
-    matrix.multiply(3);
-    console.table(matrix.matrix);
+    let a = new Matrix(2, 3);
+    let b = new Matrix(3, 2);
+    a.randomize();
+    b.randomize();
+    console.table(a.matrix);
+    console.table(b.matrix);
+
+    let c = a.multiply(b);
+    console.table(c.matrix);
+
 }
 
 function draw() {
