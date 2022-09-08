@@ -13,7 +13,7 @@ function Matrix(rows, cols) {
 Matrix.prototype.add = function (m) {
     if (m instanceof Matrix) {
         this.matrix = this.matrix.map((row, r) =>
-            row.map((value, c) => value + m[r][c])
+            row.map((value, c) => value + m.matrix[r][c])
         );
     } else {
         this.matrix = this.matrix.map((row) => {
