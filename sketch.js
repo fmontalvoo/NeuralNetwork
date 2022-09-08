@@ -7,7 +7,7 @@ function setup() {
     console.table(a.matrix);
     console.table(b.matrix);
 
-    let c = a.multiply(b);
+    let c = a.dot(b);
     console.table(c.matrix);
 
 }
