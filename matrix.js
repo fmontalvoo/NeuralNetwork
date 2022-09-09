@@ -39,9 +39,9 @@ Matrix.prototype.map = function (callback = (value = [[0]], row = 0, col = 0) =>
 }
 Matrix.prototype.toArray = function () {
     const array = [];
-    for (let row = 0; row < this.rows; row++)
-        for (let col = 0; col < this.cols; col++)
-            array.push(this.data[row][col]);
+    this.data.map((row, r) => {
+        return row.map((value, c) => array.push(value));
+    });
     return array;
 }
 

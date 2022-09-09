@@ -12,6 +12,7 @@ function setup() {
 
     let d = Matrix.transpose(c);
     d.print();
+    console.log(d.toArray())
 
 }
 
