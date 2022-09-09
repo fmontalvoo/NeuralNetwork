@@ -4,11 +4,14 @@ function setup() {
     let b = new Matrix(3, 2);
     a.randomize();
     b.randomize();
-    console.table(a.matrix);
-    console.table(b.matrix);
+    a.print();
+    b.print();
 
-    let c = a.dot(b);
-    console.table(c.matrix);
+    let c = Matrix.dot(a, b);
+    c.print();
+
+    let d = Matrix.transpose(c);
+    d.print();
 
 }
 

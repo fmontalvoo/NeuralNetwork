@@ -1,75 +1,77 @@
-function Matrix(rows, cols) {
+function Matrix(rows = 1, cols = 1) {
     this.rows = rows;
     this.cols = cols;
-    this.matrix = Array.from(Array(this.rows), () => new Array(this.cols).fill(0));
-    // this.matrix = [];
-    // for (let i = 0; i < this.rows; i++) {
-    //     this.matrix[i] = [];
-    //     for (let j = 0; j < this.cols; j++) {
-    //         this.matrix[i][j] = 0;
-    //     }
-    // }
+    this.data = Array.from(Array(this.rows), () => new Array(this.cols).fill(0));
 }
 
 Matrix.prototype.add = function (m) {
     if (m instanceof Matrix) {
-        this.matrix = this.matrix.map((row, r) =>
-            row.map((value, c) => value + m.matrix[r][c])
-        );
+        if (this.rows !== n.rows || this.cols !== n.cols) {
+            console.error('Columns and Rows of M1 must match Columns and Rows of M2.');
+            return;
+        }
+        return this.map((value, row, col) => value + m[row][col]);
     } else {
-        this.matrix = this.matrix.map((row) => {
-            return row.map((value) => value + m);
-        });
+        return this.map(value => value + m);
     }
 };
 
 Matrix.prototype.multiply = function (m) {
     if (m instanceof Matrix) {
-        this.matrix = this.matrix.map((row, r) =>
-            row.map((value, c) => value * m.matrix[r][c])
-        );
+        if (this.rows !== n.rows || this.cols !== n.cols) {
+            console.error('Columns and Rows of M1 must match Columns and Rows of M2.');
+            return;
+        }
+        return this.map((value, row, col) => value * m[row][col]);
     } else {
-        this.matrix = this.matrix.map((row) => {
-            return row.map((value) => value * m);
-        });
+        return this.map(value => value * m);
     }
 }
 
-Matrix.prototype.dot = function (m) {
-    if (m instanceof Matrix) {
-        if (this.cols !== m.rows) {
-            console.log(`Columns of M1 must match rows of M2.`);
-            return undefined;
-        }
-
-        let a = this;
-        let b = m;
-        let result = new Matrix(a.rows, b.cols);
-        for (let r = 0; r < result.rows; r++) {
-            for (let c = 0; c < result.cols; c++) {
-                let sum = 0;
-                for (let k = 0; k < a.cols; k++) {
-                    sum += a.matrix[r][k] * b.matrix[k][c];
-                }
-                result.matrix[r][c] = sum;
-            }
-        }
-        return result;
-    }
-};
-
-Matrix.prototype.transpose = function () {
-    let result = new Matrix(this.cols, this.rows);
-    for (let r = 0; r < this.rows; r++) {
-        for (let c = 0; c < this.cols; c++) {
-            result.matrix[c][r] = this.matrix[r][c];
+Matrix.prototype.map = function (callback = (value = [[0]], row = 0, col = 0) => 0) {
+    for (let row = 0; row < this.rows; row++) {
+        for (let col = 0; col < this.cols; col++) {
+            let value = this.data[row][col];
+            this.data[row][col] = callback(value, row, col);
         }
     }
-    return result;
+    return this;
+}
+Matrix.prototype.toArray = function () {
+    const array = [];
+    for (let row = 0; row < this.rows; row++)
+        for (let col = 0; col < this.cols; col++)
+            array.push(this.data[row][col]);
+    return array;
 }
 
 Matrix.prototype.randomize = function () {
-    this.matrix = this.matrix.map((row) => {
-        return row.map((value) => Math.floor(Math.random() * 10));
-    });
+    this.map(() => Math.floor(Math.random() * 10));
+};
+
+Matrix.prototype.print = function () {
+    console.table(this.data);
+}
+
+Matrix.transpose = function (matrix = Matrix) {
+    return new Matrix(matrix.cols, matrix.rows)
+        .map((_, row, col) => matrix.data[col][row]);
+}
+
+Matrix.dot = function (a = Matrix, b = Matrix) {
+    if (a instanceof Matrix && b instanceof Matrix) {
+        if (a.cols !== b.rows) {
+            console.error(`Columns of M1 must match rows of M2.`);
+            return undefined;
+        }
+
+        return new Matrix(a.rows, b.cols)
+            .map((_, row, col) => {
+                let sum = 0;
+                for (let k = 0; k < a.cols; k++)
+                    sum += a.data[row][k] * b.data[k][col];
+                return sum;
+            });
+    }
+    return undefined;
 };
