@@ -4,6 +4,8 @@ function Matrix(rows = 1, cols = 1) {
     this.data = Array.from(Array(this.rows), () => new Array(this.cols).fill(0));
 }
 
+// Metodos de clase
+
 Matrix.prototype.add = function (m) {
     if (m instanceof Matrix) {
         if (this.rows !== n.rows || this.cols !== n.cols) {
@@ -37,6 +39,7 @@ Matrix.prototype.map = function (callback = (value = [[0]], row = 0, col = 0) =>
     }
     return this;
 }
+
 Matrix.prototype.toArray = function () {
     const array = [];
     this.data.map((row, r) => {
@@ -52,6 +55,9 @@ Matrix.prototype.randomize = function () {
 Matrix.prototype.print = function () {
     console.table(this.data);
 }
+
+
+// Metodos estaticos
 
 Matrix.transpose = function (matrix = Matrix) {
     return new Matrix(matrix.cols, matrix.rows)
