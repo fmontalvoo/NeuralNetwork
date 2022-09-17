@@ -8,11 +8,11 @@ function Matrix(rows = 1, cols = 1) {
 
 Matrix.prototype.add = function (m) {
     if (m instanceof Matrix) {
-        if (this.rows !== n.rows || this.cols !== n.cols) {
+        if (this.rows !== m.rows || this.cols !== m.cols) {
             console.error('Columns and Rows of M1 must match Columns and Rows of M2.');
             return;
         }
-        return this.map((value, row, col) => value + m[row][col]);
+        return this.map((value, row, col) => value + m.data[row][col]);
     } else {
         return this.map(value => value + m);
     }
@@ -24,7 +24,7 @@ Matrix.prototype.multiply = function (m) {
             console.error('Columns and Rows of M1 must match Columns and Rows of M2.');
             return;
         }
-        return this.map((value, row, col) => value * m[row][col]);
+        return this.map((value, row, col) => value * m.data[row][col]);
     } else {
         return this.map(value => value * m);
     }
@@ -33,7 +33,7 @@ Matrix.prototype.multiply = function (m) {
 Matrix.prototype.map = function (callback = (value = [[0]], row = 0, col = 0) => 0) {
     for (let row = 0; row < this.rows; row++) {
         for (let col = 0; col < this.cols; col++) {
-            let value = this.data[row][col];
+            const value = this.data[row][col];
             this.data[row][col] = callback(value, row, col);
         }
     }
@@ -48,8 +48,8 @@ Matrix.prototype.toArray = function () {
     return array;
 }
 
-Matrix.prototype.randomize = function () {
-    this.map(() => Math.floor(Math.random() * 10));
+Matrix.prototype.randomize = function (min = -1, max = 1) {
+    this.map(() => Math.floor((Math.random() * (max - min + 1)) + min));
 };
 
 Matrix.prototype.print = function () {
@@ -62,6 +62,11 @@ Matrix.prototype.print = function () {
 Matrix.transpose = function (matrix = Matrix) {
     return new Matrix(matrix.cols, matrix.rows)
         .map((_, row, col) => matrix.data[col][row]);
+}
+
+Matrix.fromArray = function (array = [0]) {
+    return new Matrix(array.length, 1)
+        .map((_, row, __) => array[row]);
 }
 
 Matrix.dot = function (a = Matrix, b = Matrix) {
