@@ -1,8 +1,8 @@
-function NeuralNetwork(input_layer, hidden_layer, output_layer, learning_rate = 0.001) {
+function NeuralNetwork(input_layer, hidden_layer, output_layer) {
     this.input_layer = input_layer;
     this.hidden_layer = hidden_layer;
     this.output_layer = output_layer;
-    this.learning_rate = learning_rate;
+    this.setLearningRate();
 
     // Weigths inputs layer -> hidden layer
     this.weights_ih = new Matrix(this.hidden_layer, this.input_layer);
@@ -21,6 +21,10 @@ function NeuralNetwork(input_layer, hidden_layer, output_layer, learning_rate = 
 
 
 // Funciones de clase
+
+NeuralNetwork.prototype.setLearningRate = function (alpha = 0.1) {
+    this.learning_rate = alpha;
+}
 
 NeuralNetwork.prototype.predict = function (inputs_array = [0]) {
     let inputs = Matrix.fromArray(inputs_array);
