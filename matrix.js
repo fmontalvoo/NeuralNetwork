@@ -16,11 +16,11 @@ Matrix.prototype.add = function (m) {
     } else {
         return this.map(value => value + m);
     }
-};
+}
 
 Matrix.prototype.multiply = function (m) {
     if (m instanceof Matrix) {
-        if (this.rows !== n.rows || this.cols !== n.cols) {
+        if (this.rows !== m.rows || this.cols !== m.cols) {
             console.error('Columns and Rows of M1 must match Columns and Rows of M2.');
             return;
         }
@@ -40,6 +40,14 @@ Matrix.prototype.map = function (callback = (value = [[0]], row = 0, col = 0) =>
     return this;
 }
 
+Matrix.prototype.print = function () {
+    console.table(this.data);
+}
+
+Matrix.prototype.randomize = function (min = -1, max = 1) {
+    this.map(() => Math.floor((Math.random() * (max - min + 1)) + min));
+}
+
 Matrix.prototype.toArray = function () {
     const array = [];
     this.data.map((row, r) => {
@@ -48,26 +56,8 @@ Matrix.prototype.toArray = function () {
     return array;
 }
 
-Matrix.prototype.randomize = function (min = -1, max = 1) {
-    this.map(() => Math.floor((Math.random() * (max - min + 1)) + min));
-};
-
-Matrix.prototype.print = function () {
-    console.table(this.data);
-}
-
 
 // Metodos estaticos
-
-Matrix.transpose = function (matrix = Matrix) {
-    return new Matrix(matrix.cols, matrix.rows)
-        .map((_, row, col) => matrix.data[col][row]);
-}
-
-Matrix.fromArray = function (array = [0]) {
-    return new Matrix(array.length, 1)
-        .map((_, row, __) => array[row]);
-}
 
 Matrix.dot = function (a = Matrix, b = Matrix) {
     if (a instanceof Matrix && b instanceof Matrix) {
@@ -85,4 +75,29 @@ Matrix.dot = function (a = Matrix, b = Matrix) {
             });
     }
     return undefined;
-};
+}
+
+Matrix.fromArray = function (array = [0]) {
+    return new Matrix(array.length, 1)
+        .map((_, row) => array[row]);
+}
+
+Matrix.map = function (matrix = Matrix, callback = (value = [[0]], row = 0, col = 0) => 0) {
+    return new Matrix(matrix.rows, matrix.cols)
+        .map((_, row, col) => callback(matrix.data[row][col], row, col));
+}
+
+Matrix.subtract = function (a = Matrix, b = Matrix) {
+    if (a.rows !== b.rows || a.cols !== b.cols) {
+        console.error('Columns and Rows of A must match Columns and Rows of B.');
+        return;
+    }
+
+    return new Matrix(a.rows, a.cols)
+        .map((_, row, col) => a.data[row][col] - b.data[row][col]);
+}
+
+Matrix.transpose = function (matrix = Matrix) {
+    return new Matrix(matrix.cols, matrix.rows)
+        .map((_, row, col) => matrix.data[col][row]);
+}
