@@ -18,7 +18,17 @@ Matrix.prototype.add = function (m) {
     }
 }
 
-Matrix.prototype.multiply = function (m) {
+Matrix.prototype.map = function (callback = (value = [[0]], row = 0, col = 0) => 0) {
+    for (let row = 0; row < this.rows; row++) {
+        for (let col = 0; col < this.cols; col++) {
+            const value = this.data[row][col];
+            this.data[row][col] = callback(value, row, col);
+        }
+    }
+    return this;
+}
+
+Matrix.prototype.mult = function (m) {
     if (m instanceof Matrix) {
         if (this.rows !== m.rows || this.cols !== m.cols) {
             console.error('Columns and Rows of M1 must match Columns and Rows of M2.');
@@ -28,16 +38,6 @@ Matrix.prototype.multiply = function (m) {
     } else {
         return this.map(value => value * m);
     }
-}
-
-Matrix.prototype.map = function (callback = (value = [[0]], row = 0, col = 0) => 0) {
-    for (let row = 0; row < this.rows; row++) {
-        for (let col = 0; col < this.cols; col++) {
-            const value = this.data[row][col];
-            this.data[row][col] = callback(value, row, col);
-        }
-    }
-    return this;
 }
 
 Matrix.prototype.print = function () {
@@ -59,11 +59,21 @@ Matrix.prototype.toArray = function () {
 
 // Metodos estaticos
 
-Matrix.dot = function (a = Matrix, b = Matrix) {
+Matrix.fromArray = function (array = [0]) {
+    return new Matrix(array.length, 1)
+        .map((_, row) => array[row]);
+}
+
+Matrix.map = function (matrix = Matrix, callback = (value = [[0]], row = 0, col = 0) => 0) {
+    return new Matrix(matrix.rows, matrix.cols)
+        .map((_, row, col) => callback(matrix.data[row][col], row, col));
+}
+
+Matrix.multiply = function (a = Matrix, b = Matrix) {
     if (a instanceof Matrix && b instanceof Matrix) {
         if (a.cols !== b.rows) {
             console.error(`Columns of M1 must match rows of M2.`);
-            return undefined;
+            return;
         }
 
         return new Matrix(a.rows, b.cols)
@@ -74,17 +84,7 @@ Matrix.dot = function (a = Matrix, b = Matrix) {
                 return sum;
             });
     }
-    return undefined;
-}
-
-Matrix.fromArray = function (array = [0]) {
-    return new Matrix(array.length, 1)
-        .map((_, row) => array[row]);
-}
-
-Matrix.map = function (matrix = Matrix, callback = (value = [[0]], row = 0, col = 0) => 0) {
-    return new Matrix(matrix.rows, matrix.cols)
-        .map((_, row, col) => callback(matrix.data[row][col], row, col));
+    return;
 }
 
 Matrix.subtract = function (a = Matrix, b = Matrix) {

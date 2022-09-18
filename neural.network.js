@@ -28,12 +28,12 @@ NeuralNetwork.prototype.setLearningRate = function (alpha = 0.1) {
 
 NeuralNetwork.prototype.predict = function (inputs_array = [0]) {
     let inputs = Matrix.fromArray(inputs_array);
-    let hidden = Matrix.dot(this.weights_ih, inputs);
+    let hidden = Matrix.multiply(this.weights_ih, inputs);
 
     hidden.add(this.bias_h);
     hidden.map(NeuralNetwork.sigmoid);
 
-    let outputs = Matrix.dot(this.weights_ho, hidden);
+    let outputs = Matrix.multiply(this.weights_ho, hidden);
     outputs.add(this.bias_o);
 
     outputs.map(NeuralNetwork.sigmoid);
@@ -45,11 +45,11 @@ NeuralNetwork.prototype.train = function (inputs_array = [0], targets_array = [0
     let inputs = Matrix.fromArray(inputs_array);
     let targets = Matrix.fromArray(targets_array);
 
-    let hidden = Matrix.dot(this.weights_ih, inputs);
+    let hidden = Matrix.multiply(this.weights_ih, inputs);
     hidden.add(this.bias_h);
     hidden.map(NeuralNetwork.sigmoid);
 
-    let outputs = Matrix.dot(this.weights_ho, hidden);
+    let outputs = Matrix.multiply(this.weights_ho, hidden);
     outputs.add(this.bias_o);
     outputs.map(NeuralNetwork.sigmoid);
 
@@ -58,12 +58,12 @@ NeuralNetwork.prototype.train = function (inputs_array = [0], targets_array = [0
 
     // Calculo gradiente de la capa de salida
     let output_gradients = Matrix.map(outputs, NeuralNetwork.dsigmoid);
-    output_gradients.multiply(output_errors);
-    output_gradients.multiply(this.learning_rate);
+    output_gradients.mult(output_errors);
+    output_gradients.mult(this.learning_rate);
 
     // Calculo deltas de la capa de salida
     let hidden_T = Matrix.transpose(hidden);
-    let weigths_ho_deltas = Matrix.dot(output_gradients, hidden_T);
+    let weigths_ho_deltas = Matrix.multiply(output_gradients, hidden_T);
 
     // Ajuste de pesos y bias en la capa de salida
     this.weights_ho.add(weigths_ho_deltas);
@@ -71,16 +71,16 @@ NeuralNetwork.prototype.train = function (inputs_array = [0], targets_array = [0
 
     // Calculo de error de la capa oculta
     let weigths_ho_t = Matrix.transpose(this.weights_ho);
-    let hidden_errors = Matrix.dot(weigths_ho_t, output_errors);
+    let hidden_errors = Matrix.multiply(weigths_ho_t, output_errors);
 
     // Calculo gradiente de la capa oculta
     let hidden_gradients = Matrix.map(hidden, NeuralNetwork.dsigmoid);
-    hidden_gradients.multiply(hidden_errors);
-    hidden_gradients.multiply(this.learning_rate);
+    hidden_gradients.mult(hidden_errors);
+    hidden_gradients.mult(this.learning_rate);
 
     // Calculo deltas de la capa oculta
     let inputs_T = Matrix.transpose(inputs);
-    let weigths_ih_deltas = Matrix.dot(hidden_gradients, inputs_T);
+    let weigths_ih_deltas = Matrix.multiply(hidden_gradients, inputs_T);
 
     // Ajuste de pesos y bias en la capa oculta
     this.weights_ih.add(weigths_ih_deltas);
